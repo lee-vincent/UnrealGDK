@@ -47,8 +47,16 @@ if [[ -e .git/hooks ]]; then
         rm -f .git/hooks/post-merge
     fi
 
+    # Remove the old pre-commit hook.
+    if [[ -e .git/hooks/pre-commit ]]; then
+        rm -f .git/hooks/pre-commit
+    fi
+
     # Add git hook to run Setup.sh when RequireSetup file has been updated.
-    cp "$(pwd)/SpatialGDK/Extras/git/post-merge" "$(pwd)/.git/hooks"
+    cp "$(pwd)/SpatialGDK/Extras/git/*" "$(pwd)/.git/hooks"
+
+    # We pass Setup.sh args, such as --mobile, to the post-merge hook to run Setup.sh with the same args in future.
+    sed -i "s/SETUP_ARGS/$*" .git/hooks/post-merge
 fi
 
 # Create or remove an empty file in the plugin directory indicating whether to use China services region.
